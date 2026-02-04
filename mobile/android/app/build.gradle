@@ -1,0 +1,187 @@
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "com.facebook.react"
+
+/**
+ * This is the configuration block to customize your React Native Android app.
+ * By default you don't need to apply any configuration, just uncomment the lines you need.
+ */
+react {
+    hermesEnabled = true
+}
+
+/**
+ * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
+ */
+def enableProguardInReleaseBuilds = false
+
+/**
+ * The preferred build flavor of JavaScriptCore (JSC)
+ *
+ * For example, to use the international variant, you can use:
+ * `def jscFlavor = 'org.webkit:android-jsc-intl:+'`
+ *
+ * The international variant includes ICU i18n library and necessary data
+ * allowing to use e.g. `Date.toLocaleString` and `String.localeCompare` that
+ * give correct results when using with locales other than en-US. Note that
+ * this variant is about 6MiB larger per architecture than default.
+ */
+def jscFlavor = 'org.webkit:android-jsc:+'
+
+android {
+    ndkVersion rootProject.ext.ndkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdk rootProject.ext.compileSdkVersion
+
+    namespace "com.scanimg"
+    defaultConfig {
+        applicationId "com.scanimg"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testBuildType System.getProperty("testBuildType", "debug")
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        
+        // Переменные окружения для React Native
+        // SENTRY_DSN можно установить через gradle.properties или local.properties
+        // Формат в gradle.properties: SENTRY_DSN=https://your-dsn@sentry.io/project-id
+        def sentryDsn = project.findProperty('SENTRY_DSN') ?: ''
+        buildConfigField "String", "SENTRY_DSN", "\"${sentryDsn}\""
+    }
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    
+    kotlinOptions {
+        jvmTarget = "17"
+        freeCompilerArgs += ["-Xskip-metadata-version-check"]
+    }
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        release {
+            // В CI/CD эти значения будут переданы через -P параметры
+            if (project.hasProperty('android.injected.signing.store.file')) {
+                storeFile file(project.property('android.injected.signing.store.file'))
+                storePassword project.property('android.injected.signing.store.password')
+                keyAlias project.property('android.injected.signing.key.alias')
+                keyPassword project.property('android.injected.signing.key.password')
+            } else {
+                // Локальная разработка - используем debug keystore
+                // В production замените на release keystore
+                storeFile file('debug.keystore')
+                storePassword 'android'
+                keyAlias 'androiddebugkey'
+                keyPassword 'android'
+            }
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            proguardFile "${rootProject.projectDir}/../node_modules/detox/android/detox/proguard-rules-app.pro"
+        }
+    }
+}
+
+// Автоматическая очистка старого приложения перед установкой
+task uninstallOldApp(type: Exec) {
+    group = 'install'
+    description = 'Удаляет старое приложение перед установкой'
+    ignoreExitValue = true
+    
+    if (System.getProperty('os.name').toLowerCase().contains('windows')) {
+        commandLine 'cmd', '/c', 'adb', 'uninstall', 'com.scanimg'
+    } else {
+        commandLine 'adb', 'uninstall', 'com.scanimg'
+    }
+    
+    doFirst {
+        println '🧹 Автоматическая очистка старого приложения...'
+    }
+    
+    doLast {
+        println '✅ Старое приложение удалено (если было установлено)'
+    }
+}
+
+// Очистка кеша приложения
+task clearAppCache(type: Exec) {
+    group = 'install'
+    description = 'Очищает кеш приложения'
+    ignoreExitValue = true
+    
+    if (System.getProperty('os.name').toLowerCase().contains('windows')) {
+        commandLine 'cmd', '/c', 'adb', 'shell', 'pm', 'clear', 'com.scanimg'
+    } else {
+        commandLine 'adb', 'shell', 'pm', 'clear', 'com.scanimg'
+    }
+    
+    doLast {
+        println '✅ Кеш приложения очищен'
+    }
+}
+
+// Удаляем дубликаты .webp файлов перед сборкой
+task deleteWebpIcons(type: Delete) {
+    def resDir = file("src/main/res")
+    if (resDir.exists()) {
+        resDir.eachDir { dir ->
+            dir.eachFileMatch(~/.*\.webp$/) { file ->
+                delete file
+                println "Удален дубликат: ${file.path}"
+            }
+        }
+    }
+}
+
+// Выполняем удаление перед слиянием ресурсов
+afterEvaluate {
+    tasks.matching { it.name.startsWith("merge") && it.name.contains("Resources") }.configureEach {
+        dependsOn deleteWebpIcons
+    }
+    preBuild.dependsOn deleteWebpIcons
+    
+    // Автоматически удаляем старое приложение перед установкой
+    tasks.matching { it.name == "installDebug" || it.name == "installRelease" }.configureEach { installTask ->
+        installTask.dependsOn uninstallOldApp
+        installTask.dependsOn clearAppCache
+    }
+}
+
+dependencies {
+    // The version of react-native is set by the React Native Gradle Plugin
+    implementation("com.facebook.react:react-android:0.73.6")
+    implementation("com.facebook.react:flipper-integration:0.73.6")
+    implementation libs.core.ktx
+    implementation libs.appcompat
+    implementation libs.material
+    testImplementation libs.junit
+    androidTestImplementation("com.wix:detox:+")
+    androidTestImplementation libs.ext.junit
+    androidTestImplementation libs.espresso.core
+
+    if (hermesEnabled.toBoolean()) {
+        implementation("com.facebook.react:hermes-android:0.73.6")
+    } else {
+        implementation jscFlavor
+    }
+    
+    // Explicitly add pdfbox-android to help resolution
+    implementation 'com.github.TomRoush:PdfBox-Android:v1.8.9.1'
+}
+
+apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+apply plugin: "com.google.gms.google-services"

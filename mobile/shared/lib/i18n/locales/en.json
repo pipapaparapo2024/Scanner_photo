@@ -1,0 +1,508 @@
+{
+  "scan_detail": {
+    "title": "Scan Detail",
+    "export_pdf": "Export to PDF",
+    "export_txt": "Export to TXT",
+    "copy_text": "Copy Text",
+    "share": "Share",
+    "delete": "Delete"
+  },
+  "scan_result": {
+    "title": "Scan Result",
+    "copy_success": "Copied",
+    "copy_error": "Failed to copy text",
+    "text_recognized": "Text recognized:",
+    "credits_remaining": "Credits remaining: {{count}}",
+    "scan_date": "Scan Date"
+  },
+  "scan_error": {
+    "title": "Text not found or invisible",
+    "description": "No text detected in the photo or it is too blurry.\nTry taking a new scan with better lighting.",
+    "button": "Take new scan"
+  },
+  "camera": {
+    "permission_title": "Camera Permission",
+    "permission_message": "Camera permission is required to use the app. Please allow access in settings.",
+    "permission_denied_title": "Permission Denied",
+    "permission_denied_message": "Failed to request permission. Please allow access in device settings.",
+    "permission_required_title": "Camera Permission Required",
+    "permission_required_text": "Camera permission is required to scan text",
+    "allow_access": "Allow Access",
+    "camera_unavailable_title": "Camera Unavailable",
+    "camera_unavailable_text": "Camera not found on this device.\n\nIf you are using an emulator, camera works only on real devices.\n\nTo test camera:\n1. Connect a real Android device\n2. Or use an emulator with camera support",
+    "photo_error": "Failed to take photo. Please try again.",
+    "select_source": "Select Source",
+    "take_photo": "Take Photo",
+    "open_camera": "Open Camera",
+    "choose_from_gallery": "Choose from Gallery",
+    "choose_photo": "Choose Photo"
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "back_hint": "Returns to previous screen",
+    "next": "Next",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "this_week": "This Week",
+    "this_month": "This Month",
+    "retry": "Retry",
+    "reset_all": "Reset All",
+    "buy_pack_hint": "Tap to purchase pack"
+  },
+  "rating": {
+    "title": "Rate the app",
+    "message": "Do you like the app? Please leave a rating in the app store!",
+    "rate_button": "Rate",
+    "later_button": "Later",
+    "dont_ask_button": "Don't ask again",
+    "rate_hint": "Go to app store"
+  },
+  "cloud_storage": {
+    "title": "Cloud Storage",
+    "status": "Status",
+    "connected": "Connected: {{service}}",
+    "not_connected": "Not connected",
+    "connect": "Connect",
+    "queue": "In queue: {{pending}} | Errors: {{failed}}",
+    "settings_title": "Settings",
+    "auto_sync": "Auto-sync scans",
+    "autosync_description": "Automatically save scans to cloud",
+    "default_format": "Default format",
+    "file_format_title": "File format",
+    "sync_existing_scans_title": "Sync existing scans",
+    "sync_existing_scans_message": "All your scans will be added to sync queue. Continue?",
+    "sync_button": "Sync",
+    "disconnect_button": "Disconnect",
+    "google_drive_setup_error": "To connect Google Drive, OAuth Client ID must be configured in the app.",
+    "yandex_disk_setup_error": "To connect Yandex.Disk, OAuth Client ID must be configured in the app.",
+    "disconnect_confirm_title": "Disconnect cloud?",
+    "disconnect_confirm_message": "Are you sure you want to disconnect cloud storage?",
+    "disconnect_success": "Cloud storage disconnected",
+    "connect_success": "{{service}} connected successfully",
+    "connect_error": "Failed to connect to cloud storage",
+    "load_settings_error": "Failed to load settings",
+    "load_folders_error": "Failed to load folders",
+    "availability_error": "Cloud storage unavailable. Check connection."
+  },
+  "feedback": {
+    "title": "Feedback",
+    "description": "Share your suggestions, report a bug, or ask a question. We value your feedback!",
+    "subject": "Subject",
+    "subject_placeholder": "Select subject",
+    "message": "Message",
+    "message_placeholder": "Describe your issue or suggestion...",
+    "email": "Email (for reply)",
+    "email_placeholder": "your@email.com",
+    "email_hint": "If you provide an email, we can contact you for details",
+    "send": "Send",
+    "subjects": {
+      "bug": "Bugs and errors",
+      "suggestion": "Suggestion for improvement",
+      "question": "Question",
+      "complaint": "Complaint",
+      "other": "Other"
+    },
+    "validation_error": "Please select a subject and fill in the message",
+    "success": "Your message has been sent",
+    "server_error": "Server error. Please try again later or contact support.",
+    "send_error": "Failed to send message"
+  },
+  "scan_detail": {
+    "title": "Scan Detail",
+    "copy_success": "Text copied to clipboard",
+    "copy_error": "Failed to copy text",
+    "comment_saved": "Comment saved",
+    "comment_save_error": "Failed to save comment",
+    "cloud_not_configured": "Cloud storage not configured",
+    "export_cloud_title": "Export to Cloud",
+    "export_format_message": "Select file format:",
+    "export_success": "File successfully exported to cloud",
+    "export_error": "Export failed",
+    "generating": "Generating document...",
+    "uploading": "Uploading to cloud...",
+    "scan_not_found": "Scan not found",
+    "loading_error": "Error loading scan",
+    "comment_title": "Comment",
+    "comment_placeholder": "Add a note to the scan...",
+    "no_comment": "No comment",
+    "copy_label": "Copy text",
+    "copy_hint": "Copies recognized text to clipboard",
+    "edit_comment_label": "Edit comment",
+    "save_comment_label": "Save comment",
+    "cancel_edit_label": "Cancel edit"
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "last_updated": "Last updated: {{date}}",
+    "section1": {
+      "title": "1. Acceptance of Terms",
+      "text": "By downloading and using the ScanImg application, you agree to comply with these Terms of Service. If you do not agree with the terms, please do not use the application."
+    },
+    "section2": {
+      "title": "2. Service Description",
+      "text": "ScanImg provides text scanning and recognition (OCR) services using the mobile device camera. Recognition occurs on-device using Google ML Kit technology."
+    },
+    "section3": {
+      "title": "3. User Account",
+      "text_intro": "Registration is required to use some application features.",
+      "text_1": "• You are responsible for maintaining the security of your account data.",
+      "text_2": "• You agree to provide accurate information during registration.",
+      "text_3": "• We reserve the right to block an account for violation of rules."
+    },
+    "section4": {
+      "title": "4. Application Usage",
+      "text": "It is prohibited to use the application for scanning and distributing illegal materials, copyright infringement, or committing illegal acts."
+    },
+    "section5": {
+      "title": "5. Intellectual Property",
+      "text_intro": "All rights to the application and its content belong to the developers.",
+      "text_1": "• Users retain rights to the content they create (scans).",
+      "text_2": "• The application is provided under an \"as is\" license.",
+      "text_3": "• Copying, modifying, or decompiling the application is prohibited."
+    },
+    "section6": {
+      "title": "6. Changes to Terms",
+      "text": "We may update our Terms of Service from time to time. We will notify you of any changes by posting the new Terms of Service on this page."
+    },
+    "section7": {
+      "title": "7. Contact Us",
+      "text": "If you have any questions about these Terms of Service, please contact us via the feedback form in the app."
+    },
+    "web_link": "Open full version on website"
+  },
+  "history": {
+    "title": "Scan History",
+    "search_placeholder": "Search text...",
+    "empty": {
+      "title": "History is empty",
+      "description": "Start scanning documents to see them here"
+    },
+    "delete_confirm_title": "Delete scan?",
+    "delete_confirm_message": "Are you sure you want to delete this scan?",
+    "delete_success": "Scan deleted successfully",
+    "delete_error": "Failed to delete scan. Please try again.",
+    "filter": {
+      "date_range": "Select date range",
+      "today": "Today",
+      "week": "Week",
+      "month": "Month",
+      "search": "Search",
+      "clear_date": "Clear date",
+      "reset_all": "Reset all"
+    },
+    "empty_search": {
+      "title": "Nothing found",
+      "description": "Try changing search parameters"
+    },
+    "loading_error": "Failed to load history",
+    "load_more_error": "Failed to load more scans",
+    "load_history_error": "Failed to load scan history",
+    "rate_limit_cached": "Too many requests. Showing cached scans.",
+    "no_connection_cached": "No internet. Showing cached scans.",
+    "rate_limit_try_later": "Too many requests. Try again later.",
+    "no_connection_check_network": "No internet. Check your connection.",
+    "auth_error": "Authorization error. Please sign in again.",
+    "records": "records",
+    "record": "record",
+    "from": "From",
+    "to": "To"
+  },
+  "navigation": {
+    "history": "History",
+    "scan": "Scan",
+    "profile": "Profile",
+    "settings": "Settings",
+    "home": "Home"
+  },
+  "auth": {
+    "login_title": "Login",
+    "registration_title": "Registration",
+    "confirmation_title": "Confirmation",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "loginWithGoogle": "Login with Google",
+    "loginWithEmail": "Login with Email",
+    "createAccount": "Create Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "enter_email": "Enter your email to receive a verification code",
+    "email_placeholder": "Email",
+    "continue": "Continue",
+    "sending": "Sending...",
+    "enter_email_error": "Enter email",
+    "invalid_email_format": "Invalid email format",
+    "email_already_registered": "Email already registered",
+    "email_registered_desc": "This email is already in use. Use login or password recovery.",
+    "send_code_error": "Failed to send code",
+    "enter_code_title": "Enter code",
+    "enter_code_subtitle": "We sent a 4-digit code to {{email}}",
+    "verify": "Verify",
+    "verifying": "Verifying...",
+    "code_error_length": "Enter 4-digit code",
+    "code_error_invalid": "Invalid code",
+    "resend_code": "Resend code",
+    "resend_timer": "Resend in {{time}}",
+    "code_resent_success": "Code resent successfully",
+    "code_resent_title": "Success",
+    "create_password_title": "Create password",
+    "create_password_subtitle": "Create a strong password for your account",
+    "password_placeholder": "Password",
+    "confirm_password_placeholder": "Confirm password",
+    "password_min_length": "Password must be at least 6 characters",
+    "complete_registration": "Complete Registration",
+    "creating_account": "Creating account...",
+    "enter_password_error": "Enter password",
+    "password_mismatch_error": "Passwords do not match",
+    "registration_success_title": "Registration successful",
+    "registration_success_message": "Welcome to ScanImg!",
+    "login_title": "Login",
+    "login_subtitle": "Enter email and password",
+    "login_button": "Login",
+    "logging_in": "Logging in...",
+    "fill_all_fields": "Fill in all fields",
+    "login_error_title": "Login failed",
+    "show": "Show",
+    "hide": "Hide",
+    "resend_code_action": "Resend code",
+    "code_not_received": "Didn't receive code?",
+    "welcome": "Welcome",
+    "choose_method": "Choose login method"
+  },
+  "export": {
+    "error_txt": "Failed to export to TXT",
+    "error_pdf": "Failed to export to PDF",
+    "error_share": "Failed to share",
+    "txt_menu": "Export to TXT",
+    "pdf_menu": "Export to PDF",
+    "share_menu": "Share (Email/Telegram)"
+  },
+  "image_picker": {
+    "error_open": "Failed to open gallery",
+    "error_select": "Failed to select image",
+    "error_general": "Error"
+  },
+  "sync": {
+    "error_title": "Sync Error",
+    "error_message": "Failed to sync scan with cloud. Check internet connection.",
+    "progress_title": "Syncing",
+    "progress_message": "Syncing with cloud. Please wait..."
+  },
+  "scan": {
+    "scanText": "Scan Text",
+    "scanning": "Scanning...",
+    "scanComplete": "Scan Complete",
+    "noTextFound": "No text found",
+    "copyToClipboard": "Copy to Clipboard",
+    "export": "Export",
+    "share": "Share"
+  },
+  "settings": {
+    "language": "Language",
+    "theme": "Theme",
+    "notifications": "Notifications",
+    "privacy": "Privacy",
+    "about": "About",
+    "version": "Version",
+    "selectLanguage": "Select Language",
+    "cloudStorage": "Cloud Storage",
+    "faq": "FAQ",
+    "feedback": "Feedback",
+    "rateApp": "Rate App",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "aboutApp": "About App",
+    "darkTheme": "Dark Theme"
+  },
+  "languages": {
+    "en": "English",
+    "ru": "Russian"
+  },
+  "onboarding": {
+    "page1": {
+      "title": "Scan Documents",
+      "description": "Use your device camera to quickly scan any documents with high quality."
+    },
+    "page2": {
+      "title": "Text Recognition",
+      "description": "Powerful OCR technology automatically recognizes text from images and converts it into editable format."
+    },
+    "page3": {
+      "title": "Save and Share",
+      "description": "Export results to PDF or TXT, save to cloud, and share with colleagues in one click."
+    },
+    "skip": "Skip",
+    "next": "Next",
+    "start": "Get Started",
+    "start_hint": "Go to app",
+    "next_hint": "Go to next slide"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "last_updated": "Last updated: {{date}}",
+    "section1": {
+      "title": "1. General Provisions",
+      "text": "This Privacy Policy determines the order of processing and protection of personal data of ScanImg mobile application users."
+    },
+    "section2": {
+      "title": "2. Collected Data",
+      "text": "When using the App, we collect: Email address (during registration), Texts recognized from images, Comments and notes to scans, App usage data."
+    },
+    "section3": {
+      "title": "3. Data Usage",
+      "text": "Collected data is used for: Providing app functionality, Improving service quality, Processing user requests."
+    },
+    "section4": {
+      "title": "4. Data Storage",
+      "text": "Data is stored on Firebase (Google Cloud Platform) servers using standard security measures. Data is stored until account deletion by user."
+    },
+    "section5": {
+      "title": "5. User Rights",
+      "text": "User has the right to: Access their data, Modify or delete their data, Withdraw consent for data processing."
+    },
+    "section6": {
+      "title": "6. Contacts",
+      "text": "For questions regarding personal data processing, please contact us via the feedback form in the app."
+    },
+    "web_link": "View full version on website"
+  },
+  "account": {
+    "balance": "Balance",
+    "tokens": "tokens",
+    "topUp": "Top up balance",
+    "buyScanPackages": "Buy scan packages",
+    "watchAds": "Or watch ads to get free tokens"
+  },
+  "faq": {
+    "searchPlaceholder": "Search questions...",
+    "allCategories": "All",
+    "notFound": "Nothing found. Try another query.",
+    "noQuestions": "No questions found.",
+    "categories": {
+      "general": "General",
+      "scanning": "Scanning",
+      "credits": "Tokens & Credits",
+      "account": "Account",
+      "technical": "Technical"
+    },
+    "items": {
+      "what-is-app": {
+        "question": "What is ScanImg?",
+        "answer": "ScanImg is a mobile app for recognizing text from photos and documents. Using Google ML Kit technologies, the app allows you to quickly and accurately extract text from images directly on your device."
+      },
+      "how-to-use": {
+        "question": "How to use the app?",
+        "answer": "1. Tap the 'Scan' button at the bottom of the screen\n2. Select source: camera or gallery\n3. Take a photo or select an image\n4. Wait for processing\n5. Copy or save the recognized text"
+      },
+      "supported-languages": {
+        "question": "What languages are supported?",
+        "answer": "The app supports text recognition in many languages, including Russian, English, German, French, Spanish, and many others. Recognition accuracy depends on image quality and text clarity."
+      },
+      "how-to-scan": {
+        "question": "How to scan?",
+        "answer": "Open the app and tap the 'Scan' button at the bottom of the screen. You can choose between camera (to take a new photo) or gallery (to select an existing image). After selecting an image, it will be processed automatically."
+      },
+      "scan-quality": {
+        "question": "How to improve recognition quality?",
+        "answer": "For best results:\n• Ensure the text is well-lit\n• Hold the camera parallel to the document\n• Avoid shadows and glare\n• Ensure all text is in the frame\n• Use high-resolution photos"
+      },
+      "scan-history": {
+        "question": "Where are my scans stored?",
+        "answer": "All your scans are saved in the app history and synchronized with the cloud. You can view them in the 'History' tab. Scans are available from any device where you are logged into your account."
+      },
+      "copy-text": {
+        "question": "How to copy recognized text?",
+        "answer": "After scanning is complete, tap the 'Copy' button on the result screen. The text will be copied to the clipboard and you can paste it into any app."
+      },
+      "what-are-credits": {
+        "question": "What are tokens (credits)?",
+        "answer": "Tokens are the app's internal currency used to pay for scans. Each scan costs a certain number of tokens. You get free tokens upon registration and can purchase additional ones."
+      },
+      "how-to-get-credits": {
+        "question": "How to get more tokens?",
+        "answer": "You can get tokens in several ways:\n• Watching ads (reward for viewing)\n• Buying token packages\n• Daily bonuses (if available)\n• Inviting friends (if available)"
+      },
+      "credits-cost": {
+        "question": "How much does one scan cost?",
+        "answer": "One scan usually costs 1 token. The cost may vary depending on document size or text complexity. The exact cost is displayed before scanning begins."
+      },
+      "create-account": {
+        "question": "How to create an account?",
+        "answer": "When launching the app for the first time, tap 'Register', enter your email, confirm it with the code from the email, and create a password. After that, you can use all app features."
+      },
+      "forgot-password": {
+        "question": "Forgot password. What to do?",
+        "answer": "On the login screen, tap 'Forgot password?' and follow the instructions. A password reset link will be sent to your email. If the problem persists, contact support."
+      },
+      "delete-account": {
+        "question": "How to delete account?",
+        "answer": "To delete your account, go to settings, find the 'Delete Account' section and follow the instructions. Warning: this action is irreversible and all your data will be deleted."
+      },
+      "app-crashes": {
+        "question": "App crashes. What to do?",
+        "answer": "Try the following solutions:\n• Restart the app\n• Restart your device\n• Update the app to the latest version\n• Clear app cache\n• Reinstall the app (data will be saved in the cloud)"
+      },
+      "camera-not-working": {
+        "question": "Camera not working",
+        "answer": "Check:\n• Camera permissions in device settings\n• If the camera is used by another app\n• If the camera works in other apps\n• If device drivers are updated"
+      },
+      "slow-recognition": {
+        "question": "Recognition is slow",
+        "answer": "Recognition speed depends on:\n• Image size (large images take longer)\n• Device performance\n• Internet connection quality\n• Text complexity\n\nTry reducing photo resolution or using a simpler image."
+      },
+      "offline-mode": {
+        "question": "Does the app work offline?",
+        "answer": "Text recognition works offline as it uses Google ML Kit on the device. However, syncing scan history, purchasing tokens, and other features require an internet connection."
+      }
+    }
+  },
+  "errors": {
+    "networkError": "Network Error",
+    "serverError": "Server Error",
+    "permissionDenied": "Permission Denied",
+    "cameraNotAvailable": "Camera not available",
+    "storageError": "Storage Error"
+  },
+  "monetization": {
+    "title": "Tokens & Packs",
+    "current_balance": "Current balance",
+    "tokens": "tokens",
+    "tokens_count": "+{{count}} tokens",
+    "buy_packs": "Buy scan packs",
+    "pack_50": "Pack 50 scans",
+    "pack_100": "Pack 100 scans",
+    "payment_unavailable": "Payment system is temporarily unavailable. Coming soon.",
+    "reward_ad_title": "Get tokens for watching ads",
+    "reward_ad_desc": "Watch an ad and get 3 free tokens. Available only with zero balance.",
+    "reward_ad_only_zero": "Ads available only when balance is zero",
+    "watch_ad": "Watch ad",
+    "reward_3_tokens": "+3 tokens"
+  },
+  "cloud_sync": {
+    "loading_list": "Loading scan list...",
+    "no_scans": "No scans to sync",
+    "adding_queue": "Adding {{count}} scans to queue...",
+    "added_count": "Added {{added}} of {{total}} scans to sync queue",
+    "sync_existing_error": "Failed to sync scans"
+  },
+  "photo_confirm": {
+    "title": "Confirm photo",
+    "instruction": "Check the photo. If everything is good, press \"Next\" for processing.",
+    "next": "Next"
+  }
+}

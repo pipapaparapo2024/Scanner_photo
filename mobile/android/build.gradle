@@ -1,0 +1,70 @@
+buildscript {
+    ext {
+        buildToolsVersion = "34.0.0"
+        minSdkVersion = 24
+        compileSdkVersion = 34
+        targetSdkVersion = 34
+        ndkVersion = "25.1.8937393"
+        kotlinVersion = "1.9.24"
+        reactNativeVersion = "0.73.6"
+    }
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://plugins.gradle.org/m2/' }
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.4.0")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath("com.google.gms:google-services:4.4.4")
+    }
+}
+
+apply plugin: "com.facebook.react.rootproject"
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://www.jitpack.io' }
+        maven { url "$rootDir/../node_modules/detox/Detox-android" }
+    }
+    configurations.all {
+        resolutionStrategy {
+            dependencySubstitution {
+                substitute(module("com.facebook.react:react-native")).using(module("com.facebook.react:react-android:0.73.6"))
+            }
+            // Принудительно используем совместимую версию kotlinx-coroutines
+            force "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
+            force "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+            // Принудительно используем версию React Native
+            force "com.facebook.react:react-android:0.73.6"
+        }
+    }
+}
+
+// Настройки Kotlin для всех подпроектов
+gradle.projectsEvaluated {
+    subprojects { project ->
+        if (project.hasProperty("android")) {
+            project.android {
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
+                }
+            }
+        }
+        
+        project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+            kotlinOptions {
+                jvmTarget = "17"
+                allWarningsAsErrors = false  // Отключаем warnings as errors
+                freeCompilerArgs += [
+                    "-Xskip-metadata-version-check",
+                    "-Xsuppress-version-warnings"
+                ]
+            }
+        }
+    }
+}

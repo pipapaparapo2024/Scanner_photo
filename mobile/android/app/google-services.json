@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "657686566116",
+    "project_id": "scanimg-77848",
+    "storage_bucket": "scanimg-77848.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:657686566116:android:c1b92937bd05fedd67c8f1",
+        "android_client_info": {
+          "package_name": "com.scanimg"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCu7vWlkzvMh17H3laStDQZZB1GAFmEbyw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

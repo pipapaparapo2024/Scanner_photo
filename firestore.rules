@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ============================================
+    // USERS COLLECTION
+    // ============================================
+    // Users can only read/write their own document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Scans subcollection - users can only access their own scans
+      match /scans/{scanId} {
+        allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+    
+    // ============================================
+    // VERIFICATION CODES
+    // ============================================
+    // Only backend (Admin SDK) can read/write verification codes.
+    // Client must never read codes — verification is done server-side only.
+    match /verification_codes/{codeId} {
+      allow read, write: if false; // Only backend (Admin SDK) can read/write
+    }
+    
+    // ============================================
+    // VERIFIED EMAILS
+    // ============================================
+    // Read-only for authenticated users, write only via backend
+    match /verified_emails/{email} {
+      allow read: if request.auth != null;
+      allow write: if false; // Only backend can write
+    }
+    
+    // ============================================
+    // REWARD TOKENS
+    // ============================================
+    // Users can only read their own reward tokens
+    match /reward_tokens/{tokenId} {
+      allow read: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
+      allow write: if false; // Only backend can write
+    }
+    
+    // ============================================
+    // FEEDBACK
+    // ============================================
+    // Users can create feedback, but not read others' or modify
+    match /feedback/{feedbackId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
+      allow update, delete: if false; // Only backend can manage
+    }
+    
+    // ============================================
+    // DEFAULT DENY
+    // ============================================
+    // Deny access to all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
