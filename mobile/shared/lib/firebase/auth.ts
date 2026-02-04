@@ -1,5 +1,17 @@
-import { getAuth } from "@react-native-firebase/auth";
+import { 
+  getAuth, 
+  onAuthStateChanged as _onAuthStateChanged,
+  signInWithEmailAndPassword as _signInWithEmailAndPassword,
+  createUserWithEmailAndPassword as _createUserWithEmailAndPassword,
+  signInAnonymously as _signInAnonymously,
+  signOut as _signOut,
+  getIdToken as _getIdToken
+} from "@react-native-firebase/auth";
 import type { FirebaseAuthTypes } from "@react-native-firebase/auth";
+
+// Экспортируем сырой метод для использования с конкретным объектом пользователя
+export const getIdTokenForUser = _getIdToken;
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { 
   sendVerificationCode as apiSendVerificationCode, 
@@ -39,7 +51,8 @@ export async function getIdToken(forceRefresh = false): Promise<string | null> {
   if (!user) {
     return null;
   }
-  return user.getIdToken(forceRefresh);
+  // Используем модульный метод _getIdToken вместо метода объекта user
+  return _getIdToken(user, forceRefresh);
 }
 
 /**
@@ -48,7 +61,7 @@ export async function getIdToken(forceRefresh = false): Promise<string | null> {
 export function onAuthStateChanged(
   callback: (user: User | null) => void,
 ): () => void {
-  return getAuthInstance().onAuthStateChanged(callback);
+  return _onAuthStateChanged(getAuthInstance(), callback);
 }
 
 /**
@@ -57,7 +70,7 @@ export function onAuthStateChanged(
 export async function signInAnonymously(): Promise<User> {
   try {
     // Используем новый API без deprecated методов
-    const userCredential = await getAuthInstance().signInAnonymously();
+    const userCredential = await _signInAnonymously(getAuthInstance());
     return userCredential.user;
   } catch (error: any) {
     // Более детальная обработка ошибок
@@ -78,7 +91,7 @@ export async function signInWithEmailAndPassword(
   password: string,
 ): Promise<User> {
   try {
-    const userCredential = await getAuthInstance().signInWithEmailAndPassword(email, password);
+    const userCredential = await _signInWithEmailAndPassword(getAuthInstance(), email, password);
     return userCredential.user;
   } catch (error: any) {
     // Обработка всех возможных кодов ошибок аутентификации
@@ -109,7 +122,7 @@ export async function createUserWithEmailAndPassword(
   password: string,
 ): Promise<User> {
   try {
-    const userCredential = await getAuthInstance().createUserWithEmailAndPassword(email, password);
+    const userCredential = await _createUserWithEmailAndPassword(getAuthInstance(), email, password);
     return userCredential.user;
   } catch (error: any) {
     if (error?.code === 'auth/email-already-in-use') {
@@ -248,16 +261,18 @@ export async function createUserAfterVerification(
   };
 
   const createInFirestore = async (firebaseUser: User) => {
-    const token = await firebaseUser.getIdToken();
-    apiClient.setAuthToken(token); // чтобы useUser и прочие запросы уже шли с токеном
-    await apiRegisterUser(email, password, token); // токен в запрос, чтобы не было гонки с useUser
+    const token = await getIdToken(); // Use helper which now uses modular API
+    if (token) {
+        apiClient.setAuthToken(token); // чтобы useUser и прочие запросы уже шли с токеном
+        await apiRegisterUser(email, password, token); // токен в запрос, чтобы не было гонки с useUser
+    }
   };
 
   try {
     await removeVerifiedKey();
 
     // 1) Создаём пользователя в Firebase Auth (и сразу логиним)
-    const userCredential = await getAuthInstance().createUserWithEmailAndPassword(email, password);
+    const userCredential = await _createUserWithEmailAndPassword(getAuthInstance(), email, password);
     const user = userCredential.user;
 
     // 2) Токен + создание документа в Firestore (коллекция users). Без токена бэкенд отдаёт 401.
@@ -269,7 +284,7 @@ export async function createUserAfterVerification(
       // Пользователь уже есть в Firebase Auth (например, незавершённая регистрация).
       // Пробуем войти и, если в Firestore его ещё нет, создаём документ.
       try {
-        const signInResult = await getAuthInstance().signInWithEmailAndPassword(email, password);
+        const signInResult = await _signInWithEmailAndPassword(getAuthInstance(), email, password);
         const existingUser = signInResult.user;
 
         await createInFirestore(existingUser);
@@ -312,7 +327,7 @@ export async function signOut(): Promise<void> {
       // Пользователь уже не авторизован, просто возвращаемся
       return;
     }
-    await getAuthInstance().signOut();
+    await _signOut(getAuthInstance());
   } catch (error: any) {
     // Если пользователь уже не авторизован, это нормально
     if (error?.code === 'auth/no-current-user' || error?.code === 'auth/null-user') {

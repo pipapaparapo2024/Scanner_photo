@@ -32,7 +32,14 @@ export function LoginEmailPage() {
     try {
       setLoading(true);
       setError("");
-      await signInWithEmailAndPassword(email, password);
+      
+      // Добавляем таймаут для предотвращения вечной загрузки
+      const loginPromise = signInWithEmailAndPassword(email, password);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error(t("auth.timeout_error", { defaultValue: "Превышено время ожидания. Попробуйте еще раз." }))), 15000);
+      });
+
+      await Promise.race([loginPromise, timeoutPromise]);
       
       // Отслеживаем успешный вход
       await logEvent(AnalyticsEvents.USER_LOGGED_IN, {

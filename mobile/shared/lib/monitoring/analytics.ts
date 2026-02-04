@@ -5,6 +5,8 @@
  * Бесплатный план: до 500 уникальных событий
  */
 
+import { getAnalytics, logEvent as _logEvent, setUserProperty as _setUserProperty, setUserId as _setUserId } from "@react-native-firebase/analytics";
+
 let analyticsInitialized = false;
 
 /**
@@ -16,15 +18,15 @@ export async function initAnalytics() {
   }
 
   try {
-    const analyticsModule = await import("@react-native-firebase/analytics");
-    const analytics = analyticsModule.default || analyticsModule;
+    // Analytics включается автоматически при использовании modular API
+    // Но мы можем вызвать getAnalytics() для проверки
+    const analytics = getAnalytics();
     
     if (!analytics) {
       console.warn("[Analytics] Module not available");
       return;
     }
     
-    // Analytics включается автоматически
     analyticsInitialized = true;
     console.log("[Analytics] Initialized");
   } catch (error) {
@@ -40,14 +42,16 @@ export async function logEvent(
   eventName: string,
   parameters?: Record<string, any>
 ) {
-  if (!analyticsInitialized) return;
+  if (!analyticsInitialized) {
+    // Попытка инициализации если еще не было
+    try {
+        getAnalytics();
+        analyticsInitialized = true;
+    } catch(e) { return; }
+  }
   
   try {
-    const analyticsModule = await import("@react-native-firebase/analytics");
-    const analytics = analyticsModule.default || analyticsModule;
-    if (analytics && typeof analytics === 'function') {
-      await analytics().logEvent(eventName, parameters);
-    }
+    await _logEvent(getAnalytics(), eventName, parameters);
   } catch (error) {
     // Не логируем ошибки, чтобы не засорять консоль
     if (__DEV__) {
@@ -63,11 +67,7 @@ export async function setUserProperty(name: string, value: string) {
   if (!analyticsInitialized) return;
   
   try {
-    const analyticsModule = await import("@react-native-firebase/analytics");
-    const analytics = analyticsModule.default || analyticsModule;
-    if (analytics && typeof analytics === 'function') {
-      await analytics().setUserProperty(name, value);
-    }
+    await _setUserProperty(getAnalytics(), name, value);
   } catch (error) {
     if (__DEV__) {
       console.warn(`[Analytics] Failed to set user property ${name}:`, error);
@@ -82,11 +82,7 @@ export async function setUserId(userId: string) {
   if (!analyticsInitialized) return;
   
   try {
-    const analyticsModule = await import("@react-native-firebase/analytics");
-    const analytics = analyticsModule.default || analyticsModule;
-    if (analytics && typeof analytics === 'function') {
-      await analytics().setUserId(userId);
-    }
+    await _setUserId(getAnalytics(), userId);
   } catch (error) {
     if (__DEV__) {
       console.warn("[Analytics] Failed to set user ID:", error);
@@ -98,45 +94,12 @@ export async function setUserId(userId: string) {
  * Очистить ID пользователя (при выходе)
  */
 export async function clearUserId() {
-  if (!analyticsInitialized) return;
-  
-  try {
-    const analyticsModule = await import("@react-native-firebase/analytics");
-    const analytics = analyticsModule.default || analyticsModule;
-    if (analytics && typeof analytics === 'function') {
-      await analytics().setUserId(null);
+    if (!analyticsInitialized) return;
+    try {
+        await _setUserId(getAnalytics(), null);
+    } catch (error) {
+        if (__DEV__) {
+            console.warn("[Analytics] Failed to clear user ID:", error);
+        }
     }
-  } catch (error) {
-    if (__DEV__) {
-      console.warn("[Analytics] Failed to clear user ID:", error);
-    }
-  }
 }
-
-/**
- * Предопределенные события для приложения
- */
-export const AnalyticsEvents = {
-  // Сканирование
-  SCAN_STARTED: "scan_started",
-  SCAN_COMPLETED: "scan_completed",
-  SCAN_FAILED: "scan_failed",
-  SCAN_DELETED: "scan_deleted",
-  
-  // Авторизация
-  USER_REGISTERED: "user_registered",
-  USER_LOGGED_IN: "user_logged_in",
-  USER_LOGGED_OUT: "user_logged_out",
-  
-  // Монетизация
-  PURCHASE_STARTED: "purchase_started",
-  PURCHASE_COMPLETED: "purchase_completed",
-  PURCHASE_FAILED: "purchase_failed",
-  AD_REWARD_VIEWED: "ad_reward_viewed",
-  
-  // Навигация
-  SCREEN_VIEWED: "screen_viewed",
-  
-  // Обратная связь
-  FEEDBACK_SUBMITTED: "feedback_submitted",
-} as const;

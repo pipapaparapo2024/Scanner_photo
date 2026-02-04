@@ -1,4 +1,4 @@
-import { getApp, getApps, initializeApp } from "@react-native-firebase/app";
+import { getApp, getApps } from "@react-native-firebase/app";
 
 /**
  * Конфигурация Firebase для клиентского приложения
@@ -12,18 +12,21 @@ import { getApp, getApps, initializeApp } from "@react-native-firebase/app";
 // Получаем или инициализируем Firebase приложение
 let app;
 try {
-  if (getApps().length === 0) {
-    // Firebase автоматически инициализируется из google-services.json / GoogleService-Info.plist
-    // Если нужно явно инициализировать, можно использовать:
-    // app = initializeApp({ ... })
+  // @react-native-firebase/app автоматически инициализирует 'default' приложение
+  // если есть google-services.json
+  if (getApps().length > 0) {
     app = getApp();
   } else {
-    app = getApp();
+    // Если приложений нет, это странно для RNFirebase (если есть конфиг файл)
+    // Попробуем получить default app, это может выбросить ошибку, если инициализация не прошла
+    try {
+      app = getApp();
+    } catch (e) {
+      console.warn("[Firebase] No apps initialized. Check google-services.json placement.");
+    }
   }
 } catch (error) {
-  // Если приложение еще не инициализировано, Firebase автоматически инициализируется
-  app = getApp();
+  console.error("[Firebase] Initialization error:", error);
 }
 
 export default app;
-

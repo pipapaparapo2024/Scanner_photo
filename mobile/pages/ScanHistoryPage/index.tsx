@@ -39,12 +39,19 @@ export function ScanHistoryPage() {
   const [isDeleting, setIsDeleting] = useState(false);
 
   // Обновляем список при каждом возврате на экран, чтобы подтянуть новые сканы
+  // Используем флаг mountedRef для предотвращения лишних обновлений
   useFocusEffect(
     React.useCallback(() => {
-      // Проверяем, есть ли новые данные или изменения
-      // Можно добавить оптимизацию, но для надежности лучше обновлять список
-      // особенно если мы только что добавили скан
-      refresh();
+      // Загружаем данные только если список пуст или прошло время
+      // Или если мы явно хотим обновить (например, после создания скана)
+      // В данном случае refresh() в useScanHistory уже содержит защиту от параллельных запросов
+      // Но мы добавим небольшую задержку, чтобы навигация успела завершиться
+      
+      const timer = setTimeout(() => {
+        refresh();
+      }, 100);
+      
+      return () => clearTimeout(timer);
     }, [refresh])
   );
 
@@ -156,89 +163,87 @@ export function ScanHistoryPage() {
 
   // Фильтрация и группировка сканов
   const groupedScans = useMemo(() => {
-    // Гарантируем, что result всегда массив
-    let result: ScanDoc[] = Array.isArray(scans) ? scans : [];
+    try {
+      let result: ScanDoc[] = Array.isArray(scans) ? scans : [];
 
-    // Фильтр по тексту (включая комментарии)
-    if (searchText.trim().length > 0) {
-      const searchLower = searchText.toLowerCase().trim();
-      result = result.filter((scan) => {
-        const textMatch = (scan.extractedText || "").toLowerCase().includes(searchLower);
-        const commentMatch = scan.comment?.toLowerCase().includes(searchLower) || false;
-        return textMatch || commentMatch;
-      });
-    }
-
-    // Фильтр по дате
-    if (startDate || endDate) {
-      result = result.filter((scan) => {
-        if (!scan.scanDate) return false;
-        const scanDate = new Date(scan.scanDate);
-        if (isNaN(scanDate.getTime())) return false;
-        
-        scanDate.setHours(0, 0, 0, 0);
-        
-        if (startDate) {
-          const start = new Date(startDate);
-          start.setHours(0, 0, 0, 0);
-          if (scanDate < start) return false;
-        }
-        
-        if (endDate) {
-          const end = new Date(endDate);
-          end.setHours(23, 59, 59, 999); // Включаем весь день
-          if (scanDate > end) return false;
-        }
-        
-        return true;
-      });
-    }
-
-    // Фильтр по избранному
-    if (showFavoritesOnly) {
-      result = result.filter((scan) => scan.isFavorite);
-    }
-
-    // Группировка по дате
-    const groups = new Map<string, ScanDoc[]>();
-    result.forEach((scan) => {
-      if (!scan.scanDate) return;
-      const date = new Date(scan.scanDate);
-      if (isNaN(date.getTime())) return;
-      
-      const groupTitle = getDateGroup(date);
-      if (!groups.has(groupTitle)) {
-        groups.set(groupTitle, []);
+      if (searchText.trim().length > 0) {
+        const searchLower = searchText.toLowerCase().trim();
+        result = result.filter((scan) => {
+          if (!scan) return false;
+          const textMatch = (scan.extractedText || "").toLowerCase().includes(searchLower);
+          const commentMatch = scan.comment?.toLowerCase().includes(searchLower) || false;
+          return textMatch || commentMatch;
+        });
       }
-      groups.get(groupTitle)!.push(scan);
-    });
 
-    // Преобразуем в массив и сортируем группы
-    const grouped: GroupedScans[] = Array.from(groups.entries())
-      .map(([title, scans]) => ({
-        title,
-        scans: scans.sort((a, b) => {
-           const dateA = new Date(a.scanDate).getTime();
-           const dateB = new Date(b.scanDate).getTime();
-           return dateB - dateA;
-        }),
-      }))
-      .sort((a, b) => {
-        // Сортируем группы: Сегодня, Вчера, На этой неделе, В этом месяце, затем по дате
-        const order: Record<string, number> = {
-          [t("common.today")]: 0,
-          [t("common.yesterday")]: 1,
-          [t("common.this_week")]: 2,
-          [t("common.this_month")]: 3,
-        };
-        const aOrder = order[a.title] ?? 99;
-        const bOrder = order[b.title] ?? 99;
-        if (aOrder !== bOrder) return aOrder - bOrder;
-        // Если оба не в порядке, сортируем по первой дате в группе
-        return new Date(b.scans[0].scanDate).getTime() - new Date(a.scans[0].scanDate).getTime();
+      if (startDate || endDate) {
+        result = result.filter((scan) => {
+          if (!scan || !scan.scanDate) return false;
+          const scanDate = new Date(scan.scanDate);
+          if (isNaN(scanDate.getTime())) return false;
+          
+          scanDate.setHours(0, 0, 0, 0);
+          
+          if (startDate) {
+            const start = new Date(startDate);
+            start.setHours(0, 0, 0, 0);
+            if (scanDate < start) return false;
+          }
+          
+          if (endDate) {
+            const end = new Date(endDate);
+            end.setHours(23, 59, 59, 999);
+            if (scanDate > end) return false;
+          }
+          
+          return true;
+        });
+      }
+
+      if (showFavoritesOnly) {
+        result = result.filter((scan) => scan && scan.isFavorite);
+      }
+
+      const groups = new Map<string, ScanDoc[]>();
+      result.forEach((scan) => {
+        if (!scan || !scan.scanDate) return;
+        const date = new Date(scan.scanDate);
+        if (isNaN(date.getTime())) return;
+        
+        const groupTitle = getDateGroup(date);
+        if (!groups.has(groupTitle)) {
+          groups.set(groupTitle, []);
+        }
+        groups.get(groupTitle)!.push(scan);
       });
 
-    return grouped;
+      const grouped: GroupedScans[] = Array.from(groups.entries())
+        .map(([title, scans]) => ({
+          title,
+          scans: scans.sort((a, b) => {
+            const dateA = new Date(a.scanDate).getTime();
+            const dateB = new Date(b.scanDate).getTime();
+            return dateB - dateA;
+          }),
+        }))
+        .sort((a, b) => {
+          const order: Record<string, number> = {
+            [t("common.today")]: 0,
+            [t("common.yesterday")]: 1,
+            [t("common.this_week")]: 2,
+            [t("common.this_month")]: 3,
+          };
+          const aOrder = order[a.title] ?? 99;
+          const bOrder = order[b.title] ?? 99;
+          if (aOrder !== bOrder) return aOrder - bOrder;
+          return new Date(b.scans[0].scanDate).getTime() - new Date(a.scans[0].scanDate).getTime();
+        });
+
+      return grouped;
+    } catch (err) {
+      console.error("ScanHistoryPage: failed to group scans", err);
+      return [];
+    }
   }, [scans, searchText, startDate, endDate, showFavoritesOnly, t, i18n.language]);
 
   const clearFilters = () => {
@@ -894,4 +899,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-

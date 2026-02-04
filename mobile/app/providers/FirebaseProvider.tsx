@@ -7,6 +7,7 @@ import {
   signOut as firebaseSignOut,
   signInWithEmailAndPassword as firebaseSignInWithEmailAndPassword,
   createUserWithEmailAndPassword as firebaseCreateUserWithEmailAndPassword,
+  getIdTokenForUser,
   type User,
 } from "../../shared/lib/firebase/auth";
 import { apiClient } from "../../shared/lib/api";
@@ -36,7 +37,7 @@ export function FirebaseProvider({ children }: FirebaseProviderProps) {
       // Обновляем токен в API клиенте
       if (authUser) {
         try {
-          const token = await authUser.getIdToken();
+          const token = await getIdTokenForUser(authUser);
           apiClient.setAuthToken(token);
         } catch (e) {
           console.error("[FirebaseProvider] Failed to get auth token:", e);
@@ -67,7 +68,7 @@ export function FirebaseProvider({ children }: FirebaseProviderProps) {
     // Проверяем текущего пользователя сразу
     const currentUser = getCurrentUser();
     if (currentUser) {
-      currentUser.getIdToken().then(token => apiClient.setAuthToken(token)).catch(e => console.error(e));
+      getIdTokenForUser(currentUser).then(token => apiClient.setAuthToken(token)).catch(e => console.error(e));
     }
     setUser(currentUser);
     setLoading(false);

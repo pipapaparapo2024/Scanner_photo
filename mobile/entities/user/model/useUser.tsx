@@ -61,7 +61,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
           // 1. Сначала получаем и устанавливаем токен
           try {
             // Force refresh to ensure valid token
-            const token = await user.getIdToken(true);
+            // Используем refreshToken из useAuth, который использует модульный API внутри
+            const token = await refreshToken();
             if (mounted && token) {
               apiClient.setAuthToken(token);
               console.log("UserProvider: Token synced successfully");

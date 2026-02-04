@@ -1,4 +1,26 @@
 {
+  "auth": {
+    "login_title": "Login",
+    "registration_title": "Registration",
+    "confirmation_title": "Confirmation",
+    "login_subtitle": "Login to continue",
+    "email_placeholder": "Email",
+    "password_placeholder": "Password",
+    "fill_all_fields": "Fill all fields",
+    "login_error_title": "Login Error",
+    "show": "Show",
+    "hide": "Hide",
+    "create_password_title": "Create Password",
+    "create_password_subtitle": "Create a strong password",
+    "password_mismatch_error": "Passwords do not match",
+    "password_min_length": "Password must be at least 6 characters",
+    "enter_password_error": "Enter password",
+    "registration_success_message": "Registration successful",
+    "email_already_registered": "Email already registered",
+    "enter_email_error": "Enter email",
+    "invalid_email_format": "Invalid email format",
+    "send_code_error": "Failed to send code"
+  },
   "scan_detail": {
     "title": "Scan Detail",
     "export_pdf": "Export to PDF",

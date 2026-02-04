@@ -248,6 +248,7 @@
     "login": "Войти",
     "logout": "Выйти",
     "register": "Регистрация",
+    "registration_title": "Регистрация",
     "email": "Email",
     "password": "Пароль",
     "confirmPassword": "Подтвердите пароль",

@@ -46,10 +46,15 @@ export function useScanHistory() {
       if (reset) {
         const cachedScans = await ScanCacheService.loadScans();
         if (cachedScans && cachedScans.length > 0) {
-          console.log("useScanHistory: Показываем сканы из кэша");
-          setScans(cachedScans.slice(0, INITIAL_LIMIT));
-          setIsFromCache(true);
-          setLoading(false);
+          // Фильтруем битые данные из кэша
+          const validCachedScans = cachedScans.filter(s => s && s.scanId && s.scanDate);
+          
+          if (validCachedScans.length > 0) {
+            console.log("useScanHistory: Показываем сканы из кэша");
+            setScans(validCachedScans.slice(0, INITIAL_LIMIT));
+            setIsFromCache(true);
+            setLoading(false);
+          }
         }
       }
 
@@ -59,28 +64,31 @@ export function useScanHistory() {
       
       if (!response) {
         console.error("useScanHistory: Received empty response from getScans");
-        throw new Error("Empty response from server");
+        // Не выбрасываем ошибку, чтобы не сломать UI, просто логируем
+        // throw new Error("Empty response from server");
+        return;
       }
 
-      const serverScans = response.scans || [];
+      const serverScans = Array.isArray(response.scans) ? response.scans : [];
+      // Фильтруем битые данные с сервера
+      const validServerScans = serverScans.filter(s => s && s.scanId && s.scanDate);
       const nextCursor = response.nextCursor;
 
-      console.log("useScanHistory: Загружено с сервера:", serverScans.length, "сканов");
+      console.log("useScanHistory: Загружено с сервера:", validServerScans.length, "сканов");
       
       if (reset) {
         // Первая загрузка
-        let finalScans = serverScans;
+        let finalScans = validServerScans;
         
-        // Если есть закэшированные сканы, проверяем, нет ли там новых сканов,
-        // которые еще не попали в ответ сервера (из-за задержки индексации)
+        // Если есть закэшированные сканы, проверяем, нет ли там новых сканов
         const cachedScans = await ScanCacheService.loadScans();
         if (cachedScans && cachedScans.length > 0) {
+          const validCachedScans = cachedScans.filter(s => s && s.scanId && s.scanDate);
           const serverIds = new Set(finalScans.map(s => s.scanId));
-          const missingInServer = cachedScans.filter(s => !serverIds.has(s.scanId));
+          const missingInServer = validCachedScans.filter(s => !serverIds.has(s.scanId));
           
           if (missingInServer.length > 0) {
             console.log(`useScanHistory: Найдено ${missingInServer.length} сканов в кэше, отсутствующих на сервере. Объединяем.`);
-            // Добавляем отсутствующие сканы в начало списка
             finalScans = [...missingInServer, ...finalScans];
           }
         }
@@ -143,6 +151,7 @@ export function useScanHistory() {
         }
       } else if (err?.status === 401 || err?.status === 403) {
         setError(i18n.t("history.auth_error"));
+        console.warn("Authorization error while loading scans. Ensure token is set.");
       } else if (!reset) {
         showToast(i18n.t("history.load_more_error"), "error");
       } else {
@@ -155,14 +164,10 @@ export function useScanHistory() {
       setLoadingMore(false);
       isLoadingRef.current = false;
     }
-  }, [user]);
+  }, [user?.uid]); // Use user.uid to avoid unnecessary re-renders when user object changes but is same user
 
-  useEffect(() => {
-    if (user) {
-      loadScans();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  // Remove the useEffect that auto-fetches to avoid race conditions with useFocusEffect in the page
+  // The page should control when to fetch (on mount or focus)
 
   // Функция для подгрузки следующей страницы
   const loadMore = useCallback(async () => {
