@@ -55,11 +55,20 @@ export function RootNavigator({ showOnboarding = false, showAuth = false }: Root
   // Обработка ошибок навигации
   const handleNavigationError = (error: Error) => {
     console.error("Navigation error:", error);
-    // Предотвращаем краш приложения при ошибках навигации
-    // Пытаемся вернуться на безопасный экран
+    try {
+      const { captureException, addBreadcrumb } = require("../../shared/lib/monitoring");
+      addBreadcrumb("Navigation error", {
+        message: error.message,
+        name: error.name,
+      });
+      captureException(error, {
+        tags: { source: "navigation", level: "error" },
+      });
+    } catch (monitoringError) {
+      console.error("Failed to send navigation error to monitoring:", monitoringError);
+    }
     try {
       if (navigationRef.current?.isReady()) {
-        // Если навигация готова, пытаемся перейти на главный экран
         navigationRef.current?.navigate("MainTabs" as never);
       }
     } catch (navError) {
@@ -114,6 +123,7 @@ export function RootNavigator({ showOnboarding = false, showAuth = false }: Root
   return (
     <NavigationContainer 
       ref={navigationRef}
+      onError={handleNavigationError}
       onStateChange={handleNavigationStateChange}
     >
       <Stack.Navigator
@@ -321,4 +331,3 @@ export function RootNavigator({ showOnboarding = false, showAuth = false }: Root
     </NavigationContainer>
   );
 }
-

@@ -18,6 +18,7 @@ export function TabNavigator() {
 
   return (
     <Tab.Navigator
+       initialRouteName="Account"
       tabBar={(props: BottomTabBarProps) => <CustomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
